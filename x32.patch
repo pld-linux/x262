@@ -1,0 +1,17 @@
+--- x262/common/x86/cabac-a.asm~	2015-05-02 20:29:07.000000000 +0200
++++ x262/common/x86/cabac-a.asm	2015-05-02 20:34:32.415137363 +0200
+@@ -42,11 +42,11 @@
+     %define funccpu3 %3
+     %rep 14
+         %ifidn %4, 4
+-            dq mangle(x264_coeff_last%4_ %+ funccpu1)
++            dd mangle(x264_coeff_last%4_ %+ funccpu1)
+         %elifidn %4, 64
+-            dq mangle(x264_coeff_last%4_ %+ funccpu2)
++            dd mangle(x264_coeff_last%4_ %+ funccpu2)
+         %else
+-            dq mangle(x264_coeff_last%4_ %+ funccpu3)
++            dd mangle(x264_coeff_last%4_ %+ funccpu3)
+         %endif
+         %rotate 1
+     %endrep

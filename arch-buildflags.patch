@@ -1,0 +1,67 @@
+--- x262/configure~	2015-05-02 20:15:18.000000000 +0200
++++ x262/configure	2015-05-02 20:21:43.828712992 +0200
+@@ -567,60 +567,15 @@
+     i*86)
+         ARCH="X86"
+         AS="yasm"
+-        ASFLAGS="$ASFLAGS -O2"
+-        if [ $compiler = GNU ]; then
+-            if [[ "$asm" == auto && "$CFLAGS" != *-march* ]]; then
+-                CFLAGS="$CFLAGS -march=i686"
+-            fi
+-            if [[ "$asm" == auto && "$CFLAGS" != *-mfpmath* ]]; then
+-                CFLAGS="$CFLAGS -mfpmath=sse -msse"
+-            fi
+-            CFLAGS="-m32 $CFLAGS"
+-            LDFLAGS="-m32 $LDFLAGS"
+-        else
+-            # icc on linux has various degrees of mod16 stack support
+-            if [ $SYS = LINUX ]; then
+-                # < 11 is completely incapable of keeping a mod16 stack
+-                if cpp_check "" "" "__INTEL_COMPILER < 1100" ; then
+-                    stack_alignment=4
+-                # 11 <= x < 12 is capable of keeping a mod16 stack, but defaults to not doing so.
+-                elif cpp_check "" "" "__INTEL_COMPILER < 1200" ; then
+-                    CFLAGS="$CFLAGS -falign-stack=assume-16-byte"
+-                fi
+-                # >= 12 defaults to a mod16 stack
+-            fi
+-            # icl on windows has no mod16 stack support
+-            [ $SYS = WINDOWS ] && stack_alignment=4
+-        fi
+-        if [ "$SYS" = MACOSX ]; then
+-            ASFLAGS="$ASFLAGS -f macho -DPREFIX"
+-        elif [ "$SYS" = WINDOWS -o "$SYS" = CYGWIN ]; then
+-            ASFLAGS="$ASFLAGS -f win32 -DPREFIX"
+-            LDFLAGS="$LDFLAGS -Wl,--large-address-aware"
+-            [ $compiler = GNU ] && LDFLAGS="$LDFLAGS -Wl,--nxcompat -Wl,--dynamicbase"
+-            [ $compiler = GNU ] && RCFLAGS="--target=pe-i386 $RCFLAGS"
+-        else
+-            ASFLAGS="$ASFLAGS -f elf"
+-        fi
++        ASFLAGS="$ASFLAGS -f elf"
+         ;;
+     x86_64)
+         ARCH="X86_64"
+         AS="yasm"
+-        [ $compiler = GNU ] && CFLAGS="-m64 $CFLAGS" && LDFLAGS="-m64 $LDFLAGS"
+-        if [ "$SYS" = MACOSX ]; then
+-            ASFLAGS="$ASFLAGS -f macho64 -m amd64 -DPIC -DPREFIX"
+-            if cc_check '' "-arch x86_64"; then
+-                CFLAGS="$CFLAGS -arch x86_64"
+-                LDFLAGS="$LDFLAGS -arch x86_64"
+-            fi
+-        elif [ "$SYS" = WINDOWS -o "$SYS" = CYGWIN ]; then
+-            ASFLAGS="$ASFLAGS -f win32 -m amd64"
+-            # only the GNU toolchain is inconsistent in prefixing function names with _
+-            [ $compiler = GNU ] && cc_check "" "-S" && grep -q "_main:" conftest && ASFLAGS="$ASFLAGS -DPREFIX"
+-            [ $compiler = GNU ] && LDFLAGS="$LDFLAGS -Wl,--nxcompat -Wl,--dynamicbase"
+-            [ $compiler = GNU ] && RCFLAGS="--target=pe-x86-64 $RCFLAGS"
++        if [ "$X32" == "yes" ]; then
++            ASFLAGS="$ASFLAGS -f elfx32"
+         else
+-            ASFLAGS="$ASFLAGS -f elf -m amd64"
++            ASFLAGS="$ASFLAGS -f elf64"
+         fi
+         ;;
+     powerpc|powerpc64)

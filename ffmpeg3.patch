@@ -1,0 +1,42 @@
+diff -ur x262.orig/input/lavf.c x262/input/lavf.c
+--- x262.orig/input/lavf.c	2015-04-05 10:06:51.000000000 +0200
++++ x262/input/lavf.c	2016-03-28 16:27:23.139384629 +0200
+@@ -83,7 +83,7 @@
+     AVCodecContext *c = h->lavf->streams[h->stream_id]->codec;
+     AVPacket *pkt = p_pic->opaque;
+ 
+-    avcodec_get_frame_defaults( h->frame );
++    av_frame_unref( h->frame );
+ 
+     while( i_frame >= h->next_frame )
+     {
+@@ -153,7 +153,7 @@
+     if( !strcmp( psz_filename, "-" ) )
+         psz_filename = "pipe:";
+ 
+-    h->frame = avcodec_alloc_frame();
++    h->frame = av_frame_alloc();
+     if( !h->frame )
+         return -1;
+ 
+@@ -253,7 +253,7 @@
+     avcodec_close( h->lavf->streams[h->stream_id]->codec );
+     avformat_close_input( &h->lavf );
+ #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54, 28, 0)
+-    avcodec_free_frame( &h->frame );
++    av_frame_free( &h->frame );
+ #else
+     av_freep( &h->frame );
+ #endif
+diff -ur x262.orig/x264.c x262/x264.c
+--- x262.orig/x264.c	2015-04-05 10:06:51.000000000 +0200
++++ x262/x264.c	2016-03-28 16:25:55.376774931 +0200
+@@ -436,7 +436,7 @@
+     printf( "                              - valid csps for `lavf' demuxer:\n" );
+     printf( INDENT );
+     size_t line_len = strlen( INDENT );
+-    for( enum PixelFormat i = AV_PIX_FMT_NONE+1; i < AV_PIX_FMT_NB; i++ )
++    for( enum AVPixelFormat i = AV_PIX_FMT_NONE+1; i < AV_PIX_FMT_NB; i++ )
+     {
+         const char *pfname = av_get_pix_fmt_name( i );
+         if( pfname )

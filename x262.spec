@@ -1,9 +1,10 @@
+%define		rel	3
 Summary:	MPEG-2 encoder based on x264
 Summary(pl.UTF-8):	Koder MPEG-2 oparty na x264
 Name:		x262
 Version:	0
 %define	snap	20150316
-Release:	0.%{snap}.2
+Release:	0.%{snap}.%{rel}
 License:	GPL v2+
 Group:		Libraries
 # git clone git://git.videolan.org/x262.git
@@ -12,6 +13,7 @@ Source0:	%{name}.tar.xz
 Patch0:		%{name}-lsmash-update.patch
 Patch1:		arch-buildflags.patch
 Patch2:		x32.patch
+Patch3:		ffmpeg3.patch
 URL:		https://www.videolan.org/developers/x262.html
 # libswscale libavformat libavcodec libavutil
 BuildRequires:	ffmpeg-devel >= 0.7.1
@@ -36,6 +38,7 @@ x262 to koder MPEG-2 oparty na najlepszych cechach x264.
 %ifarch x32
 %patch2 -p1
 %endif
+%patch3 -p1
 
 %build
 %ifarch x32

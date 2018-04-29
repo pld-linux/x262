@@ -1,4 +1,4 @@
-%define		rel	3
+%define		rel	4
 Summary:	MPEG-2 encoder based on x264
 Summary(pl.UTF-8):	Koder MPEG-2 oparty na x264
 Name:		x262

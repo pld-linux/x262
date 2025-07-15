@@ -33,12 +33,12 @@ x262 to koder MPEG-2 oparty na najlepszych cechach x264.
 
 %prep
 %setup -q -n %{name}
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 %ifarch x32
-%patch2 -p1
+%patch -P2 -p1
 %endif
-%patch3 -p1
+%patch -P3 -p1
 
 %build
 %ifarch x32
